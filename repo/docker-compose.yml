@@ -1,0 +1,74 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: offline-ops-mongo
+    command: ["mongod", "--bind_ip_all", "--quiet", "--logpath", "/dev/null"]
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: offline-ops-backend
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: "4000"
+      MONGO_URI: mongodb://mongo:27017/offline_ops_portal
+      CORS_ORIGIN: http://localhost:8080
+      JWT_SECRET: docker-compose-local-jwt-secret-aB12345678901234567890abcdefghij
+      ENCRYPTION_KEY_V1_HEX: 112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00
+      SEED_ADMIN_USERNAME: admin
+      SEED_ADMIN_PASSWORD: "ChangeMeNow!2026"
+    ports:
+      - "4000:4000"
+    volumes:
+      - backend-storage:/app/storage
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/api/v1/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  seed:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: offline-ops-seed
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongo:27017/offline_ops_portal
+      JWT_SECRET: docker-compose-local-jwt-secret-aB12345678901234567890abcdefghij
+      ENCRYPTION_KEY_V1_HEX: 112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00
+      SEED_ADMIN_USERNAME: admin
+      SEED_ADMIN_PASSWORD: "ChangeMeNow!2026"
+    command: ["node", "src/seed.js"]
+    restart: "no"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: offline-ops-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+
+volumes:
+  mongo-data:
+  backend-storage:

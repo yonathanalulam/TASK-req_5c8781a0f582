@@ -1,0 +1,2 @@
+contractNumber,facilityUnit,lessor,lessee,startDate,endDate,status,terminationEffectiveDate
+DEMO-0001,HQ-Unit-A,Acme Properties,Meridian Ops,2026-04-17T00:00:00.000Z,2026-05-17T00:00:00.000Z,active,

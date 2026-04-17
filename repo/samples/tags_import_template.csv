@@ -1,0 +1,3 @@
+username,tagCode,action,reason
+student1,high_priority,add,manual escalation
+student1,deprecated_tag,remove,cleanup

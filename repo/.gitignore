@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
+coverage/
+backend/storage/attachments/*
+!backend/storage/attachments/.gitkeep
+backend/storage/exports/*
+!backend/storage/exports/.gitkeep
+.DS_Store
+*.swp

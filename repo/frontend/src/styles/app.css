@@ -1,0 +1,47 @@
+:root {
+  --bg: #0f172a;
+  --panel: #1e293b;
+  --border: #334155;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #60a5fa;
+  --danger: #f87171;
+  --success: #4ade80;
+  --warn: #fbbf24;
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, Segoe UI, Roboto, sans-serif; font-size: 14px; }
+a { color: var(--accent); text-decoration: none; }
+input, select, textarea, button { font: inherit; color: var(--text); background: var(--panel); border: 1px solid var(--border); padding: 6px 10px; border-radius: 4px; }
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.layout { display: grid; grid-template-rows: 48px 1fr; min-height: 100vh; }
+.header { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--panel); border-bottom: 1px solid var(--border); }
+.header nav a { margin-right: 14px; padding: 4px 8px; border-radius: 4px; }
+.header nav a.active { background: var(--border); color: white; }
+.content { padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.row > * { flex: 0 0 auto; }
+.status { padding: 4px 8px; border-radius: 4px; font-size: 12px; background: var(--border); }
+.status.online { background: #064e3b; }
+.status.offline { background: #7f1d1d; }
+.status.pending { background: #78350f; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 11px; }
+.muted { color: var(--muted); }
+.error { color: var(--danger); }
+.success { color: var(--success); }
+.warn { color: var(--warn); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.formstack label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
+.formstack input, .formstack select, .formstack textarea { width: 100%; margin-bottom: 12px; }
+.spacer { height: 12px; }
+.pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; background: var(--border); }
+.pill.success { background: #064e3b; color: var(--success); }
+.pill.pending { background: #78350f; color: var(--warn); }
+.pill.failed { background: #7f1d1d; color: var(--danger); }
