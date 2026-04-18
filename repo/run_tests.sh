@@ -38,6 +38,7 @@ fi
 COMPOSE_FILE="docker-compose.test.yml"
 PROJECT="offline-ops-tests"
 BASE=($COMPOSE -p "$PROJECT" -f "$COMPOSE_FILE")
+LOCK_DIR="${TMPDIR:-/tmp}/offline-ops-tests.lock"
 
 STAGES=("${1:-all}")
 EXIT=0
@@ -46,9 +47,18 @@ log()   { printf "\n\033[1;34m[run_tests] %s\033[0m\n" "$*"; }
 stage() { printf "\n\033[1;36m==== %s ====\033[0m\n" "$*"; }
 err()   { printf "\033[1;31m[run_tests] %s\033[0m\n" "$*" >&2; }
 
+acquire_lock() {
+  if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+    err "Another run_tests.sh appears to be running (lock: $LOCK_DIR)."
+    err "Wait for it to finish or remove the stale lock directory if it's orphaned."
+    exit 2
+  fi
+}
+
 cleanup() {
   log "Tearing down test containers and volumes"
   "${BASE[@]}" down --volumes --remove-orphans >/dev/null 2>&1 || true
+  rmdir "$LOCK_DIR" >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
@@ -70,19 +80,20 @@ want() {
 }
 
 backend_stage() {
-  "${BASE[@]}" run --rm --no-deps mongo-test >/dev/null 2>&1 || true
   "${BASE[@]}" up --build --abort-on-container-exit --exit-code-from backend-test \
     mongo-test backend-test
 }
 
 frontend_stage() {
-  "${BASE[@]}" run --rm --no-deps frontend-test
+  "${BASE[@]}" run --rm --no-deps -T frontend-test
 }
 
 e2e_stage() {
   "${BASE[@]}" up --build --abort-on-container-exit --exit-code-from e2e-tests \
     mongo-test e2e-app e2e-frontend e2e-tests
 }
+
+acquire_lock
 
 if want all || want backend; then
   run_stage "Backend HTTP/integration tests (Jest)" backend_stage || true
