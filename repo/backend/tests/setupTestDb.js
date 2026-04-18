@@ -4,7 +4,14 @@ const mongoose = require('mongoose');
 let memo;
 
 async function startTestDb() {
-  memo = await MongoMemoryServer.create();
+  const uriFromEnv = process.env.MONGO_URI;
+  if (uriFromEnv) {
+    await mongoose.connect(uriFromEnv);
+    return uriFromEnv;
+  }
+
+  const mongoVersion = process.env.MONGOMS_VERSION || '7.0.14';
+  memo = await MongoMemoryServer.create({ binary: { version: mongoVersion } });
   const uri = memo.getUri();
   process.env.MONGO_URI = uri;
   await mongoose.connect(uri);
