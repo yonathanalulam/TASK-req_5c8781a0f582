@@ -1,4 +1,4 @@
-# Offline Lease & Service Operations Portal - Static Delivery Acceptance & Architecture Audit (Regenerated)
+# Offline Lease & Service Operations Portal - Static Delivery Acceptance & Architecture Audit 
 
 ## 1. Verdict
 - **Overall conclusion: Partial Pass**
