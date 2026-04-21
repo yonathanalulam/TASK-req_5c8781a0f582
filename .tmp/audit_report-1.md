@@ -191,4 +191,4 @@ Major high-risk paths now have meaningful tests (including previous regressions)
 
 ## 9. Final Notes
 - This is a static-only report; no runtime correctness is claimed.
-- Compared to the prior audit, the implementation is substantially stronger and closer to acceptance, but strict scoped-data semantics still need final hardening before full pass.
+- The implementation is strong and close to acceptance, but strict scoped-data semantics still need final hardening before full pass.
